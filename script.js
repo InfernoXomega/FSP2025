@@ -1,6 +1,13 @@
 let items = [];
 let editingIndex = -1;
 
+document.addEventListener('DOMContentLoaded', function() {
+    const storedItems = JSON.parse(localStorage.getItem('items'));
+    if (storedItems) {
+        items = storedItems;  
+        renderItems();  
+    }
+});
 
 document.getElementById('crud-form').addEventListener('submit', function(event) {
     event.preventDefault();  
@@ -16,15 +23,14 @@ document.getElementById('crud-form').addEventListener('submit', function(event) 
     if (editingIndex === -1) {
         items.push(itemText);
     } else {
-        
         items[editingIndex] = itemText;
         editingIndex = -1; 
     }
 
     itemInput.value = '';  
+    saveItemsToLocalStorage();
     renderItems();  
 });
-
 
 function renderItems() {
     const itemList = document.getElementById('item-list');
@@ -38,7 +44,6 @@ function renderItems() {
     });
 }
 
-
 function editItem(index) {
     const itemInput = document.getElementById('item-name');
     itemInput.value = items[index];  
@@ -47,5 +52,10 @@ function editItem(index) {
 
 function deleteItem(index) {
     items.splice(index, 1);  
+    saveItemsToLocalStorage(); 
     renderItems();  
+}
+
+function saveItemsToLocalStorage() {
+    localStorage.setItem('items', JSON.stringify(items));
 }
